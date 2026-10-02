@@ -4,6 +4,15 @@ All notable changes to this project are documented here.
 
 ---
 
+## 0.2.1 — 2026-10-02
+
+### Fixes
+
+- `ocs --version` / `-v` and `--help` / `-h` now print their output instead of opening the TUI, which any flag used to do. ([879b7d7](https://github.com/kud/opencode-switcher-cli/commit/879b7d78a6a2122dcbb6ef5f2272f28bec3c3098))
+- Unknown options or screens now exit with an error rather than launching the TUI. ([879b7d7](https://github.com/kud/opencode-switcher-cli/commit/879b7d78a6a2122dcbb6ef5f2272f28bec3c3098))
+
+---
+
 ## 0.2.0 — 2026-10-02
 
 ### Highlights
