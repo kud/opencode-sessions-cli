@@ -6,7 +6,6 @@
   "type": "module",
   "bin": {
     "opencode-sessions": "dist/cli.js",
-    "opencode-switcher": "dist/cli.js",
     "ocs": "dist/cli.js"
   },
   "files": [
