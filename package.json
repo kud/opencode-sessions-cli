@@ -1,9 +1,11 @@
 {
-  "name": "@kud/opencode-switcher-cli",
+  "name": "@kud/opencode-sessions-cli",
   "version": "0.2.1",
-  "description": "A terminal switcher for running opencode servers: list every session, attach with a keystroke, stop headless instances",
+  "description": "A TUI session manager for running opencode servers: list every session, attach with a keystroke, stop headless instances",
+  "homepage": "https://kud.io/projects/opencode-sessions-cli",
   "type": "module",
   "bin": {
+    "opencode-sessions": "dist/cli.js",
     "opencode-switcher": "dist/cli.js",
     "ocs": "dist/cli.js"
   },
@@ -46,6 +48,9 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kud/opencode-switcher-cli"
+    "url": "https://github.com/kud/opencode-sessions-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kud/opencode-sessions-cli/issues"
   }
 }

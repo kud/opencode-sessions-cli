@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest"
 import { parseArgs } from "./args.js"
 
 describe("parseArgs", () => {
-  it("runs the live switcher with no arguments", () => {
+  it("runs the live session list with no arguments", () => {
     expect(parseArgs([])).toEqual({ kind: "run", mock: false })
   })
 

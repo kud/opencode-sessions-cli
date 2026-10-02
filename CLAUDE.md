@@ -1,4 +1,4 @@
-# @kud/opencode-switcher-cli
+# @kud/opencode-sessions-cli
 
 An Ink TUI that lists every running opencode server's sessions and attaches to one with `↵`.
 
