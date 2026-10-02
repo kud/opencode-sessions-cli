@@ -25,7 +25,7 @@ describe("registry", () => {
   const previous = process.env["MCP_OPENCODE_STATE_DIR"]
 
   beforeEach(() => {
-    dir = mkdtempSync(join(tmpdir(), "opencode-ink-"))
+    dir = mkdtempSync(join(tmpdir(), "opencode-switcher-"))
     process.env["MCP_OPENCODE_STATE_DIR"] = dir
   })
 

@@ -1,10 +1,10 @@
 {
-  "name": "@kud/opencode-ink",
+  "name": "@kud/opencode-switcher-cli",
   "version": "0.1.0",
   "description": "A terminal switcher for running opencode servers: list every session, attach with a keystroke, stop headless instances",
   "type": "module",
   "bin": {
-    "opencode-ink": "dist/cli.js",
+    "opencode-switcher": "dist/cli.js",
     "ocs": "dist/cli.js"
   },
   "files": [
@@ -46,6 +46,6 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kud/opencode-ink"
+    "url": "https://github.com/kud/opencode-switcher-cli"
   }
 }
