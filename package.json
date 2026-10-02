@@ -1,0 +1,51 @@
+{
+  "name": "@kud/opencode-ink",
+  "version": "0.1.0",
+  "description": "A terminal switcher for running opencode servers: list every session, attach with a keystroke, stop headless instances",
+  "type": "module",
+  "bin": {
+    "opencode-ink": "dist/cli.js",
+    "ocs": "dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "tsx src/cli.tsx",
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@kud/ink-ui": "0.32.0",
+    "@opencode-ai/sdk": "1.18.34",
+    "ink": "7.1.1",
+    "react": "19.2.8"
+  },
+  "devDependencies": {
+    "@types/node": "26.5.0",
+    "@types/react": "19.2.18",
+    "ink-testing-library": "4.0.0",
+    "tsup": "8.5.1",
+    "tsx": "4.23.15",
+    "typescript": "5.9.3",
+    "vitest": "5.0.0"
+  },
+  "keywords": [
+    "opencode",
+    "ink",
+    "cli",
+    "tui",
+    "terminal",
+    "kud"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kud/opencode-ink"
+  }
+}
