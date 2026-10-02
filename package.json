@@ -1,6 +1,6 @@
 {
   "name": "@kud/opencode-switcher-cli",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A terminal switcher for running opencode servers: list every session, attach with a keystroke, stop headless instances",
   "type": "module",
   "bin": {
