@@ -1,63 +1,93 @@
-# opencode-ink
+<div align="center">
 
-A terminal switcher for running [opencode](https://opencode.ai) servers. It lists every session across every server on your machine, and `↵` hands the terminal to `opencode attach`.
+🔀
+
+# opencode ink
+
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=node.js&logoColor=white)
+![MIT](https://img.shields.io/badge/licence-MIT-22C55E?style=flat-square)
+
+**A terminal switcher for running opencode servers: list every session, attach with a keystroke, stop headless instances**
+
+<a href="https://kud.io/projects/opencode-ink">Website</a> · <a href="https://kud.io/projects/opencode-ink/docs">Documentation</a>
+
+</div>
+
+## Features
+
+- **Every session, one list** — sessions from every running [opencode](https://opencode.ai) server on your machine, busiest first, then most recently updated
+- **Attach with a keystroke** — `↵` hands the terminal to `opencode attach`; quit opencode and you land back in the list
+- **Headless and windows** — finds headless instances from the [`@kud/mcp-opencode`](https://github.com/kud/mcp-opencode) registry, plus any opencode server listening locally (found with `lsof`), shown as windows
+- **Safe stop** — `x` stops a headless instance after a `y` confirmation; windows are never touched
+- **Live state** — busy, idle or retry comes from each server's `session.status`, and the list refreshes every three seconds
+- **Two names** — installs as `opencode-ink` and the short alias `ocs`
 
 ## Install
 
-```sh
-npm install -g @kud/opencode-ink
-```
-
-This gives you `opencode-ink` and the short alias `ocs`.
-
-## Use
+The package is not on npm yet, so install from source:
 
 ```sh
-ocs
+git clone https://github.com/kud/opencode-ink.git
+cd opencode-ink
+npm install
+npm run build
+npm link
 ```
 
-One row per session: repo, title, state (busy, idle or retry), age, and whether the server is a headless instance or a window, with its port. Busy sessions come first, then the most recently updated.
+Once it is published, `npm install -g @kud/opencode-ink` (or `npx @kud/opencode-ink`) will do.
 
-| Key | Action |
-| --- | --- |
-| `↑` `↓` / `j` `k` | Move |
-| `↵` | Attach to the session; quitting opencode returns you to the list |
-| `x` | Stop a headless instance (asks first) |
-| `r` | Refresh |
-| `q` | Quit |
+## Usage
 
-The list refreshes itself every three seconds.
-
-## Where it looks
-
-- **Headless instances** are the per-job servers that [`@kud/mcp-opencode`](https://github.com/kud/mcp-opencode) starts. They are read from `~/.local/state/mcp-opencode/instances.json`, or from `$MCP_OPENCODE_STATE_DIR/instances.json` if you set it. A missing or unreadable file means no instances.
-- **Windows** are any other opencode server that answers on a local port, found with `lsof`. That includes a long-running `opencode serve`. They are listed but never stopped from here.
-
-Busy and idle come from each server's `session.status`, never from the registry file.
-
-## Stopping an instance
-
-`x` on a headless row asks for `y` to confirm, then aborts its busy sessions, sends `SIGTERM` to the process (only if it really is opencode), removes its registry row, and waits up to five seconds for the port to close. On a window it says so and does nothing.
-
-## Demo flags
-
-```sh
-ocs --mock              # fixtures only, no live data
-ocs --screen list       # print screen names
-ocs --screen sessions   # open directly on a screen
+```console
+$ ocs
 ```
+
+One row per session: repo, title, state, age, and whether the server is a headless instance or a window, with its port.
+
+| Key               | Action                                                           |
+| ----------------- | ---------------------------------------------------------------- |
+| `↑` `↓` / `j` `k` | Move                                                             |
+| `↵`               | Attach to the session; quitting opencode returns you to the list |
+| `x`               | Stop a headless instance (asks for `y` to confirm)               |
+| `r`               | Refresh                                                          |
+| `q`               | Quit                                                             |
+
+Demo flags:
+
+```console
+$ ocs --mock
+$ ocs --screen list
+sessions
+$ ocs --screen sessions
+```
+
+`--mock` runs on fixtures with no live data, `--screen list` prints the screen names, and `--screen <name>` opens directly on one.
+
+### Where it looks
+
+- **Headless instances** are read from `~/.local/state/mcp-opencode/instances.json`, or from `$MCP_OPENCODE_STATE_DIR/instances.json` if you set it. A missing or unreadable file means no instances.
+- **Windows** are any other opencode server that answers on a local port, including a long-running `opencode serve`. They are listed but never stopped from here.
+
+### Stopping an instance
+
+`x` on a headless row asks for `y`, then aborts its busy sessions, sends `SIGTERM` to the process (only if it really is opencode), removes its registry row, and waits up to five seconds for the port to close. On a window it says so and does nothing.
 
 ## Development
 
 ```sh
+git clone https://github.com/kud/opencode-ink.git
+cd opencode-ink
+npm install
 npm run dev
+```
+
+```sh
 npm run typecheck
 npm test
 npm run build
 ```
 
-Built with [`@kud/ink-ui`](https://github.com/kud/ink-ui) and the [opencode SDK](https://www.npmjs.com/package/@opencode-ai/sdk) (v2 client).
+Built with [`@kud/ink-ui`](https://github.com/kud/ink-ui), [Ink](https://github.com/vadimdemedes/ink) and the [opencode SDK](https://www.npmjs.com/package/@opencode-ai/sdk).
 
-## Licence
-
-MIT
+📚 **Full documentation → [opencode-ink/docs](https://kud.io/projects/opencode-ink/docs)**
