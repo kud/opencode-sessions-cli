@@ -1,6 +1,6 @@
 {
   "name": "@kud/opencode-sessions-cli",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "A TUI session manager for running opencode servers: list every session, attach with a keystroke, stop headless instances",
   "homepage": "https://kud.io/projects/opencode-sessions-cli",
   "type": "module",
