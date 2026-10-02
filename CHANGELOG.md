@@ -4,6 +4,16 @@ All notable changes to this project are documented here.
 
 ---
 
+## 0.3.0 — 2026-10-02
+
+### Highlights
+
+- The package is now `@kud/opencode-sessions-cli` (formerly `@kud/opencode-switcher-cli`); reinstall with `npm install -g @kud/opencode-sessions-cli`, as the old package will be deprecated. ([16443d3](https://github.com/kud/opencode-sessions-cli/commit/16443d3f5712d9bb31e5e36695c78bb2435aab9b))
+- New primary command `opencode-sessions`; `ocs` still works, and `opencode-switcher` stays installed as an undocumented alias, so existing habits and scripts keep running. ([16443d3](https://github.com/kud/opencode-sessions-cli/commit/16443d3f5712d9bb31e5e36695c78bb2435aab9b))
+- The project is now described as a TUI session manager, and the GitHub repository moved to `kud/opencode-sessions-cli` (the old URL redirects). ([16443d3](https://github.com/kud/opencode-sessions-cli/commit/16443d3f5712d9bb31e5e36695c78bb2435aab9b))
+
+---
+
 ## 0.2.1 — 2026-10-02
 
 ### Fixes
