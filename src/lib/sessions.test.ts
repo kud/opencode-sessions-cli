@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { buildRows, type ServerSessions } from "./sessions.js"
+import { buildRows, filterRows, RECENT_WINDOW_MS, type ServerSessions, type SessionRow } from "./sessions.js"
 
 const NOW = 1_000_000_000_000
 const session = (id: string, directory: string, updatedMinutesAgo: number) => ({
@@ -38,8 +38,10 @@ const results: ServerSessions[] = [
   },
 ]
 
+const baseRows = buildRows(results, NOW)
+
 describe("buildRows", () => {
-  const rows = buildRows(results, NOW)
+  const rows = baseRows
 
   it("sorts busy first, then retry, then idle by recency", () => {
     expect(rows.map((row) => row.id)).toEqual([
@@ -96,5 +98,75 @@ describe("buildRows with an idle headless server", () => {
       port: 54022,
       serverDirectory: "/work/acme-api",
     })
+  })
+})
+
+describe("filterRows", () => {
+  const twoHoursAgo = NOW - RECENT_WINDOW_MS
+  const threeHoursAgo = NOW - RECENT_WINDOW_MS - 60 * 60 * 1000
+  const fiveMinutesAgo = NOW - 5 * 60 * 1000
+
+  const makeRow = (overrides: Partial<SessionRow>): SessionRow => ({
+    key: "test",
+    id: "test",
+    repo: "test",
+    title: "test",
+    state: "idle",
+    updatedAt: NOW,
+    age: "now",
+    kind: "window",
+    port: 4096,
+    url: "http://127.0.0.1:4096",
+    ...overrides,
+  })
+
+  it("showAll returns all rows", () => {
+    const filtered = filterRows(baseRows, true, NOW)
+    expect(filtered).toHaveLength(baseRows.length)
+  })
+
+  it("keeps busy sessions older than 2h", () => {
+    const rows = [makeRow({ id: "busy-old", state: "busy", updatedAt: threeHoursAgo, kind: "window" })]
+    const filtered = filterRows(rows, false, NOW)
+    expect(filtered.map((r) => r.id)).toEqual(["busy-old"])
+  })
+
+  it("keeps retry sessions older than 2h", () => {
+    const rows = [makeRow({ id: "retry-old", state: "retry", updatedAt: threeHoursAgo, kind: "window" })]
+    const filtered = filterRows(rows, false, NOW)
+    expect(filtered.map((r) => r.id)).toEqual(["retry-old"])
+  })
+
+  it("hides idle sessions older than 2h", () => {
+    const rows = [makeRow({ id: "idle-old", state: "idle", updatedAt: threeHoursAgo, kind: "window" })]
+    const filtered = filterRows(rows, false, NOW)
+    expect(filtered).toHaveLength(0)
+  })
+
+  it("keeps idle sessions within 2h", () => {
+    const rows = [makeRow({ id: "idle-recent", state: "idle", updatedAt: fiveMinutesAgo, kind: "window" })]
+    const filtered = filterRows(rows, false, NOW)
+    expect(filtered.map((r) => r.id)).toEqual(["idle-recent"])
+  })
+
+  it("always shows headless sessions regardless of age or state", () => {
+    const rows = [
+      makeRow({ id: "headless-idle-old", state: "idle", updatedAt: threeHoursAgo, kind: "headless" }),
+      makeRow({ id: "headless-busy-old", state: "busy", updatedAt: threeHoursAgo, kind: "headless" }),
+    ]
+    const filtered = filterRows(rows, false, NOW)
+    expect(filtered.map((r) => r.id)).toEqual(["headless-idle-old", "headless-busy-old"])
+  })
+
+  it("filters mixed rows correctly", () => {
+    const rows = [
+      makeRow({ id: "idle-old", state: "idle", updatedAt: threeHoursAgo, kind: "window" }),
+      makeRow({ id: "idle-recent", state: "idle", updatedAt: fiveMinutesAgo, kind: "window" }),
+      makeRow({ id: "busy-old", state: "busy", updatedAt: threeHoursAgo, kind: "window" }),
+      makeRow({ id: "retry-old", state: "retry", updatedAt: threeHoursAgo, kind: "window" }),
+      makeRow({ id: "headless-idle-old", state: "idle", updatedAt: threeHoursAgo, kind: "headless" }),
+    ]
+    const filtered = filterRows(rows, false, NOW)
+    expect(filtered.map((r) => r.id)).toEqual(["idle-recent", "busy-old", "retry-old", "headless-idle-old"])
   })
 })

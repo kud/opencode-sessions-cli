@@ -21,6 +21,8 @@ One row per session, with:
 - its age, such as `now`, `12m`, `3h`, `4d` or `2w`
 - whether the server is a headless instance or a window, and its port
 
+By default the list shows only sessions that are **busy**, **retrying**, or **updated within the last 2 hours**. Headless instances from the registry always show all their sessions. Press `a` to toggle between this filtered view and all sessions. The header shows `X of Y sessions` when filtered.
+
 Busy sessions come first, then retrying ones, then idle ones. Within each group the most recently updated session wins. A headless instance with no sessions yet still gets a row, titled `(no sessions yet)`, so you can stop it.
 
 ## Keys
@@ -31,6 +33,7 @@ Busy sessions come first, then retrying ones, then idle ones. Within each group 
 | `↵`               | Attach to the session; quitting opencode returns you to the list |
 | `x`               | Stop a headless instance (asks for `y` to confirm)               |
 | `r`               | Refresh                                                          |
+| `a`               | Toggle all sessions / recent only                                |
 | `q`               | Quit                                                             |
 
 While the stop confirmation is open, the other keys are ignored until you answer.

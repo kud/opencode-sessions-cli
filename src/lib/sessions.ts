@@ -40,6 +40,17 @@ export type ServerSessions = {
 
 const WINDOW_SESSION_LIMIT = 40
 
+export const RECENT_WINDOW_MS = 2 * 60 * 60 * 1000
+
+export const filterRows = (rows: SessionRow[], showAll: boolean, now = Date.now()): SessionRow[] => {
+  if (showAll) return rows
+  return rows.filter((row) => {
+    if (row.kind === "headless") return true
+    if (row.state === "busy" || row.state === "retry") return true
+    return now - row.updatedAt <= RECENT_WINDOW_MS
+  })
+}
+
 const toState = (type: string | undefined): RunState =>
   type === "busy" || type === "retry" ? type : "idle"
 

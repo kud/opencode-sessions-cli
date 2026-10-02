@@ -17,6 +17,7 @@
 ## Features
 
 - **Every session, one list** — sessions from every running [opencode](https://opencode.ai) server on your machine, busiest first, then most recently updated
+- **Focused by default** — shows only busy, retrying, and recently updated (≤ 2 h) sessions; headless instances always show all their sessions
 - **Attach with a keystroke** — `↵` hands the terminal to `opencode attach`; quit opencode and you land back in the list
 - **Headless and windows** — finds headless instances from the [`@kud/mcp-opencode`](https://github.com/kud/mcp-opencode) registry, plus any opencode server listening locally (found with `lsof`), shown as windows
 - **Safe stop** — `x` stops a headless instance after a `y` confirmation; windows are never touched
@@ -45,6 +46,7 @@ One row per session: repo, title, state, age, and whether the server is a headle
 | `↵`               | Attach to the session; quitting opencode returns you to the list |
 | `x`               | Stop a headless instance (asks for `y` to confirm)               |
 | `r`               | Refresh                                                          |
+| `a`               | Toggle all sessions / recent only                                |
 | `q`               | Quit                                                             |
 
 Demo flags:

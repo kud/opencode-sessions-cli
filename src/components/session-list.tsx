@@ -34,6 +34,8 @@ type SessionListProps = {
   cursor: number
   loaded: boolean
   errors: string[]
+  allRowsCount: number
+  showAll: boolean
 }
 
 const Cell = ({
@@ -86,10 +88,13 @@ export const SessionList = ({
   cursor,
   loaded,
   errors,
+  allRowsCount,
+  showAll,
 }: SessionListProps) => {
   const { columns, rows: terminalRows } = useWindowSize()
   const capacity = visibleCapacity(terminalRows, errors.length)
   const start = viewportStart(cursor, rows.length, capacity)
+  const isFiltered = allRowsCount !== rows.length
 
   return (
     <Box flexDirection="column" flexGrow={1}>
@@ -101,10 +106,16 @@ export const SessionList = ({
         />
       ) : rows.length === 0 ? (
         <Box paddingLeft={4}>
-          <Text dimColor>
-            No opencode servers found. Start one with `opencode` or ask an
-            agent to, and it will turn up here.
-          </Text>
+          {isFiltered ? (
+            <Text dimColor>
+              nothing recent · a shows all
+            </Text>
+          ) : (
+            <Text dimColor>
+              No opencode servers found. Start one with `opencode` or ask an
+              agent to, and it will turn up here.
+            </Text>
+          )}
         </Box>
       ) : (
         rows.slice(start, start + capacity).map((row, offset) => (

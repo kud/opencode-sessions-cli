@@ -4,7 +4,7 @@ const MOCK_NOW = Date.UTC(2026, 9, 2, 12, 0, 0)
 
 const minutesAgo = (minutes: number) => MOCK_NOW - minutes * 60_000
 
-const mockResults: ServerSessions[] = [
+export const mockResults: ServerSessions[] = [
   {
     server: {
       port: 54021,
