@@ -25,17 +25,11 @@
 
 ## Install
 
-The package is not on npm yet, so install from source:
-
 ```sh
-git clone https://github.com/kud/opencode-ink.git
-cd opencode-ink
-npm install
-npm run build
-npm link
+npm install -g @kud/opencode-ink
 ```
 
-Once it is published, `npm install -g @kud/opencode-ink` (or `npx @kud/opencode-ink`) will do.
+Or run it once with `npx @kud/opencode-ink`.
 
 ## Usage
 
