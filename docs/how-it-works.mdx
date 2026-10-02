@@ -1,0 +1,38 @@
+---
+title: 🔍 How it works
+description: How opencode ink finds servers, builds and orders the session list, and stops a headless instance.
+---
+
+## Two kinds of server
+
+| Kind         | Found through                                                             | Stoppable |
+| ------------ | ------------------------------------------------------------------------- | --------- |
+| **Headless** | the [`@kud/mcp-opencode`](https://github.com/kud/mcp-opencode) registry  | yes       |
+| **Window**   | any other opencode server answering on a local port, such as `opencode serve` | never     |
+
+### Headless instances
+
+They are read from `~/.local/state/mcp-opencode/instances.json`, or from `$MCP_OPENCODE_STATE_DIR/instances.json` when that variable is set. A missing or unreadable file simply means no instances.
+
+### Windows
+
+Listening ports are found with `lsof`, restricted to processes named `opencode` on local addresses (`127.0.0.1`, `::1`, `localhost` or a wildcard bind). Each candidate is probed at `/session` with a 300 ms timeout, and only a port that answers with a JSON array counts. Anything already in the registry is headless; the rest are windows.
+
+A registered port that does not answer is reported as an error (`port N: registered but not answering`) rather than silently dropped.
+
+## Building the list
+
+Each server is queried in parallel for its root sessions, then for session statuses. A headless instance is asked about its own directory. A window is asked for up to 40 sessions, and its statuses are fetched per directory. If one server fails, the others still render and the failure is reported as an error line.
+
+State is `busy`, `retry` or `idle`, taken from each server's `session.status`; anything not reported as `busy` or `retry` counts as idle.
+
+## Stopping
+
+`x` on a headless row, then `y`, runs these steps in order:
+
+1. abort the instance's busy sessions
+2. send `SIGTERM` to the process, only if it really is opencode
+3. remove its row from the registry
+4. wait up to five seconds for the port to close
+
+On a window row nothing happens.
