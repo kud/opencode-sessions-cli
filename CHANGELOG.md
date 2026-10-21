@@ -4,6 +4,23 @@ All notable changes to this project are documented here.
 
 ---
 
+## 1.0.0 — 2026-10-21
+
+### Breaking Changes
+
+- Requires opencode v2: the `@opencode/client` package replaces the v1 SDK, and v1 servers no longer work. Stay on 0.x if you still run v1. ([c21659e](https://github.com/kud/opencode-sessions-cli/commit/c21659e391fd6c20143ab571a6cc926bea8e6f5e))
+- Servers now need basic auth. The password comes from the service's state file, a registered instance's `password` field, or `OPENCODE_PASSWORD` / `OPENCODE_SERVER_PASSWORD` for any other server. ([c21659e](https://github.com/kud/opencode-sessions-cli/commit/c21659e391fd6c20143ab571a6cc926bea8e6f5e))
+- The retry state is gone; a session now shows as busy when it has active work, and idle otherwise. ([c21659e](https://github.com/kud/opencode-sessions-cli/commit/c21659e391fd6c20143ab571a6cc926bea8e6f5e))
+- `x` now interrupts running sessions instead of aborting them, and only stops headless instances; the service and windows are left alone. ([c21659e](https://github.com/kud/opencode-sessions-cli/commit/c21659e391fd6c20143ab571a6cc926bea8e6f5e))
+
+### Highlights
+
+- The opencode background service is now discovered as a third kind of server, alongside headless instances and windows. ([c21659e](https://github.com/kud/opencode-sessions-cli/commit/c21659e391fd6c20143ab571a6cc926bea8e6f5e))
+- A session shared by several servers is listed once, and a server that cannot be opened shows as a warning under the list rather than a crash. ([c21659e](https://github.com/kud/opencode-sessions-cli/commit/c21659e391fd6c20143ab571a6cc926bea8e6f5e))
+- Servers are probed through `/api/info`, and attaching runs `opencode --server <url> --session <id> <dir>`. ([c21659e](https://github.com/kud/opencode-sessions-cli/commit/c21659e391fd6c20143ab571a6cc926bea8e6f5e))
+
+---
+
 ## 0.3.0 — 2026-10-02
 
 ### Highlights
