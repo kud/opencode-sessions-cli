@@ -9,9 +9,9 @@ const deps = (overrides: Record<string, unknown> = {}) => {
   return {
     calls,
     deps: {
-      busySessionIds: async () => ["ses_a", "ses_b"],
-      abortSession: async (_t: unknown, id: string) => {
-        calls.push(`abort ${id}`)
+      activeSessionIds: async () => ["ses_a", "ses_b"],
+      interruptSession: async (_t: unknown, id: string) => {
+        calls.push(`interrupt ${id}`)
       },
       commandOf: () => "opencode serve --port 54021",
       kill: (pid: number, signal: string) => {
@@ -29,12 +29,12 @@ const deps = (overrides: Record<string, unknown> = {}) => {
 }
 
 describe("stopInstance", () => {
-  it("aborts busy sessions, signals the process group, deregisters and confirms", async () => {
+  it("interrupts active sessions, signals the process group, deregisters and confirms", async () => {
     const { calls, deps: d } = deps()
     await expect(stopInstance(target, d)).resolves.toEqual({ ok: true })
     expect(calls).toEqual([
-      "abort ses_a",
-      "abort ses_b",
+      "interrupt ses_a",
+      "interrupt ses_b",
       "kill -4242 SIGTERM",
       "deregister 54021",
     ])
@@ -60,9 +60,9 @@ describe("stopInstance", () => {
     expect(kill).not.toHaveBeenCalled()
   })
 
-  it("ignores abort errors", async () => {
+  it("ignores interrupt errors", async () => {
     const { deps: d } = deps({
-      abortSession: async () => {
+      interruptSession: async () => {
         throw new Error("boom")
       },
     })

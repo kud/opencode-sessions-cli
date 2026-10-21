@@ -14,7 +14,7 @@ Logic stays out of components: `src/lib/` holds registry, discovery, sessions, s
 
 ## Safety
 
-Never stop, abort or modify an opencode server or session you did not start. To exercise `x`, start a throwaway `opencode serve --port 0` in a scratch directory with `MCP_OPENCODE_STATE_DIR` pointing at a scratch registry. Windows (any server not in the registry, including the 4096 `opencode serve`) are never stoppable.
+Never stop, abort or modify an opencode server or session you did not start. To exercise `x`, start a throwaway opencode v2 `opencode serve --hostname 127.0.0.1 --port 0` in a scratch directory with `OPENCODE_SERVER_PASSWORD` set and its own `HOME`/`XDG_*` dirs, and register it (with that `password`) in a scratch registry pointed at by `MCP_OPENCODE_STATE_DIR`. The background service and windows (any server not in the registry) are never stoppable.
 
 ## Keys
 

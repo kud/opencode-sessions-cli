@@ -34,7 +34,8 @@ describe("App", () => {
     expect(frame).toContain("acme-api")
     expect(frame).toContain("busy")
     expect(frame).toContain("headless :54021")
-    expect(frame).toContain("window :4096")
+    expect(frame).toContain("service :4096")
+    expect(frame).toContain("window :61337")
     expect(frame).toContain("3h")
     expect(frame.indexOf("acme-api")).toBeLessThan(frame.indexOf("acme-shop"))
     expect(frame).toContain("attach")
@@ -77,7 +78,7 @@ describe("App", () => {
     await settle()
     stdin.write("x")
     await settle()
-    expect(lastFrame()).toContain("Windows can't be stopped here")
+    expect(lastFrame()).toContain("Only headless instances can be stopped here")
     unmount()
   })
 
@@ -110,20 +111,20 @@ describe("App", () => {
     await settle()
     // Default: shows 1 of 3 (filtered), hint says "a all"
     let frame = lastFrame() ?? ""
-    expect(frame).toContain("1 of 3 sessions")
+    expect(frame).toContain("2 of 4 sessions")
     expect(frame).toContain("a all")
     // Press 'a' to show all
     stdin.write("a")
     await settle()
     frame = lastFrame() ?? ""
-    expect(frame).toContain("3 sessions") // scope shows plain count when not filtered
+    expect(frame).toContain("4 sessions") // scope shows plain count when not filtered
     expect(frame).toContain("a recent")
-    expect(frame).toContain("window :4096")
+    expect(frame).toContain("window :61337")
     // Press 'a' again to go back to recent
     stdin.write("a")
     await settle()
     frame = lastFrame() ?? ""
-    expect(frame).toContain("1 of 3 sessions")
+    expect(frame).toContain("2 of 4 sessions")
     expect(frame).toContain("a all")
     unmount()
   })
@@ -145,7 +146,7 @@ describe("App", () => {
     await settle()
     const frame = lastFrame() ?? ""
     // Scope should show plain count without " of "
-    expect(frame).toContain("3 sessions")
+    expect(frame).toContain("4 sessions")
     // The " of " only appears in scope when filtered, not in the whole frame
     // Check that scope doesn't contain " of " by verifying the specific format
     expect(frame).not.toMatch(/sessions  ·  \d+ of \d+/)

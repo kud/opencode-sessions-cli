@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process"
-import { answersAsOpencode, serverUrl } from "./discovery.js"
+import { probeServer, serverUrl } from "./discovery.js"
 import { removeFromRegistry } from "./registry.js"
 import { clientFor, type SessionRow } from "./sessions.js"
 
@@ -10,39 +10,29 @@ export type StopTarget = {
   port: number
   pid: number
   directory: string
+  password?: string
 }
 
 export type StopResult = { ok: true } | { ok: false; reason: string }
 
 type StopDeps = {
-  busySessionIds: (target: StopTarget) => Promise<string[]>
-  abortSession: (target: StopTarget, sessionID: string) => Promise<void>
+  activeSessionIds: (target: StopTarget) => Promise<string[]>
+  interruptSession: (target: StopTarget, sessionID: string) => Promise<void>
   commandOf: (pid: number) => string
   kill: (pid: number, signal: NodeJS.Signals) => void
-  isOpen: (port: number) => Promise<boolean>
+  isOpen: (target: StopTarget) => Promise<boolean>
   deregister: (port: number) => void
   sleep: (ms: number) => Promise<void>
 }
 
+const clientForTarget = (target: StopTarget) =>
+  clientFor({ url: serverUrl(target.port), password: target.password })
+
 const defaultDeps: StopDeps = {
-  busySessionIds: async (target) => {
-    const client = clientFor(
-      { port: target.port, url: serverUrl(target.port), kind: "headless" },
-      target.directory,
-    )
-    const { data } = await client.session.status({
-      directory: target.directory,
-    })
-    return Object.entries(data ?? {})
-      .filter(([, status]) => status.type === "busy" || status.type === "retry")
-      .map(([id]) => id)
-  },
-  abortSession: async (target, sessionID) => {
-    const client = clientFor(
-      { port: target.port, url: serverUrl(target.port), kind: "headless" },
-      target.directory,
-    )
-    await client.session.abort({ sessionID, directory: target.directory })
+  activeSessionIds: async (target) =>
+    Object.keys(await clientForTarget(target).session.active()),
+  interruptSession: async (target, sessionID) => {
+    await clientForTarget(target).session.interrupt({ sessionID })
   },
   commandOf: (pid) => {
     try {
@@ -54,7 +44,8 @@ const defaultDeps: StopDeps = {
     }
   },
   kill: (pid, signal) => process.kill(pid, signal),
-  isOpen: (port) => answersAsOpencode(serverUrl(port)),
+  isOpen: async (target) =>
+    (await probeServer(serverUrl(target.port), target.password)) !== "absent",
   deregister: removeFromRegistry,
   sleep: (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
 }
@@ -62,13 +53,18 @@ const defaultDeps: StopDeps = {
 export const targetFromRow = (row: SessionRow): StopTarget | undefined =>
   row.pid === undefined || row.serverDirectory === undefined
     ? undefined
-    : { port: row.port, pid: row.pid, directory: row.serverDirectory }
+    : {
+        port: row.port,
+        pid: row.pid,
+        directory: row.serverDirectory,
+        password: row.password,
+      }
 
-const abortBusySessions = async (target: StopTarget, deps: StopDeps) => {
+const interruptActiveSessions = async (target: StopTarget, deps: StopDeps) => {
   try {
-    const ids = await deps.busySessionIds(target)
+    const ids = await deps.activeSessionIds(target)
     await Promise.all(
-      ids.map((id) => deps.abortSession(target, id).catch(() => undefined)),
+      ids.map((id) => deps.interruptSession(target, id).catch(() => undefined)),
     )
   } catch {
     return
@@ -84,20 +80,20 @@ const terminate = (pid: number, deps: StopDeps) => {
   }
 }
 
-const waitUntilClosed = async (port: number, deps: StopDeps) => {
+const waitUntilClosed = async (target: StopTarget, deps: StopDeps) => {
   const deadline = Date.now() + STOP_DEADLINE_MS
   while (Date.now() < deadline) {
-    if (!(await deps.isOpen(port))) return true
+    if (!(await deps.isOpen(target))) return true
     await deps.sleep(POLL_INTERVAL_MS)
   }
-  return !(await deps.isOpen(port))
+  return !(await deps.isOpen(target))
 }
 
 export const stopInstance = async (
   target: StopTarget,
   deps: StopDeps = defaultDeps,
 ): Promise<StopResult> => {
-  await abortBusySessions(target, deps)
+  await interruptActiveSessions(target, deps)
 
   if (deps.commandOf(target.pid).includes("opencode")) {
     try {
@@ -111,6 +107,6 @@ export const stopInstance = async (
   }
 
   deps.deregister(target.port)
-  const closed = await waitUntilClosed(target.port, deps)
+  const closed = await waitUntilClosed(target, deps)
   return closed ? { ok: true } : { ok: false, reason: "port still open" }
 }

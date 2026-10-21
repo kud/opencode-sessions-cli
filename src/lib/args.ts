@@ -11,6 +11,9 @@ Options:
   -h, --help         print this help
 
 Keys: ↑↓ move · ↵ attach · x stop (headless) · r refresh · a all/recent · q quit
+
+Environment:
+  OPENCODE_PASSWORD  password for servers not in the service or mcp-opencode registry
 `
 
 export type Command =

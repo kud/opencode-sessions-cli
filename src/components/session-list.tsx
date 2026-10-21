@@ -19,13 +19,11 @@ import {
 
 const STATE_GLYPH: Record<RunState, string> = {
   busy: "●",
-  retry: "↻",
   idle: "○",
 }
 
 const STATE_COLOR: Record<RunState, string | undefined> = {
   busy: colors.info,
-  retry: colors.warning,
   idle: undefined,
 }
 

@@ -9,6 +9,7 @@ export type InstanceRecord = {
   directory: string
   startedAt: string
   mcpPid: number
+  password?: string
   sessions: { id: string; title: string; model: string; startedAt: string }[]
 }
 
@@ -24,7 +25,8 @@ const isInstanceRecord = (value: unknown): value is InstanceRecord => {
   return (
     typeof row["port"] === "number" &&
     typeof row["pid"] === "number" &&
-    typeof row["directory"] === "string"
+    typeof row["directory"] === "string" &&
+    (row["password"] === undefined || typeof row["password"] === "string")
   )
 }
 

@@ -1,3 +1,5 @@
+import type { ServerKind } from "./discovery.js"
+
 export const REPO_WIDTH = 18
 export const STATE_WIDTH = 8
 export const AGE_WIDTH = 5
@@ -19,5 +21,4 @@ export const titleWidth = (columns: number) =>
       COLUMN_GAPS,
   )
 
-export const kindLabel = (kind: "headless" | "window", port: number) =>
-  `${kind === "headless" ? "headless" : "window"} :${port}`
+export const kindLabel = (kind: ServerKind, port: number) => `${kind} :${port}`

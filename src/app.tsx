@@ -13,6 +13,7 @@ import {
 import { SessionList } from "./components/session-list.js"
 import { loadSnapshot, type SessionRow, type Snapshot, filterRows } from "./lib/sessions.js"
 import { stopInstance, targetFromRow } from "./lib/stop.js"
+import { attachCommand } from "./lib/attach.js"
 
 const REFRESH_INTERVAL_MS = 3000
 
@@ -77,9 +78,10 @@ export const App = ({ load = loadSnapshot, autoRefresh = true, refreshIntervalMs
   const attach = async (row: SessionRow) => {
     paused.current = true
     await suspendTerminal(async () => {
-      const sessionArgs = row.id ? ["--session", row.id] : []
-      spawnSync("opencode", ["attach", row.url, ...sessionArgs], {
+      const { args, env } = attachCommand(row)
+      spawnSync("opencode", args, {
         stdio: "inherit",
+        env: { ...process.env, ...env },
       })
     })
     paused.current = false
@@ -103,7 +105,10 @@ export const App = ({ load = loadSnapshot, autoRefresh = true, refreshIntervalMs
 
   const requestStop = (row: SessionRow) => {
     if (row.kind !== "headless") {
-      setNotice({ variant: "warning", text: "Windows can't be stopped here" })
+      setNotice({
+        variant: "warning",
+        text: "Only headless instances can be stopped here",
+      })
       return
     }
     setNotice(undefined)

@@ -21,10 +21,22 @@ export const mockResults: ServerSessions[] = [
         time: { created: minutesAgo(30), updated: minutesAgo(1) },
       },
     ],
-    statuses: { ses_mock_one: { type: "busy" } },
+    active: ["ses_mock_one"],
   },
   {
-    server: { port: 4096, url: "http://127.0.0.1:4096", kind: "window" },
+    server: { port: 4096, url: "http://127.0.0.1:4096", kind: "service" },
+    sessions: [
+      {
+        id: "ses_mock_four",
+        title: "Sketch the onboarding copy",
+        directory: "/work/acme-site",
+        time: { created: minutesAgo(120), updated: minutesAgo(20) },
+      },
+    ],
+    active: [],
+  },
+  {
+    server: { port: 61337, url: "http://127.0.0.1:61337", kind: "window" },
     sessions: [
       {
         id: "ses_mock_two",
@@ -39,7 +51,7 @@ export const mockResults: ServerSessions[] = [
         time: { created: minutesAgo(9000), updated: minutesAgo(5760) },
       },
     ],
-    statuses: {},
+    active: [],
   },
 ]
 
