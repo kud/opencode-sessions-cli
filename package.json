@@ -15,7 +15,7 @@
     "node": ">=22"
   },
   "scripts": {
-    "dev": "tsx src/cli.tsx",
+    "dev": "NODE_ENV=${NODE_ENV:-development} tsx src/cli.ts",
     "build": "tsup",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
