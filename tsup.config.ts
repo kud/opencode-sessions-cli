@@ -4,5 +4,5 @@ export default defineConfig({
   entry: ["src/cli.tsx"],
   format: ["esm"],
   clean: true,
-  target: "node20",
+  target: "node22",
 })
