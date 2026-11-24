@@ -12,24 +12,24 @@
     "dist"
   ],
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "scripts": {
-    "dev": "tsx src/cli.tsx",
+    "dev": "NODE_ENV=${NODE_ENV:-development} tsx src/cli.ts",
     "build": "tsup",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@kud/ink-ui": "0.32.0",
+    "@kud/ink-ui": "0.44.1",
     "@opencode/client": "2.1.0",
-    "ink": "7.1.1",
-    "react": "19.2.8"
+    "ink": "8.0.0",
+    "react": "19.3.1"
   },
   "devDependencies": {
     "@types/node": "26.5.0",
-    "@types/react": "19.2.18",
+    "@types/react": "19.3.0",
     "ink-testing-library": "4.0.0",
     "tsup": "8.5.1",
     "tsx": "4.23.15",
